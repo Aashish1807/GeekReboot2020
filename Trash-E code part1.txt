@@ -1,0 +1,81 @@
+#include<SoftwareSerial.h>
+#include <Servo.h>
+
+Servo myservo;  
+int pos = 20;  
+const int trigPin = 5;
+const int echoPin = 4;
+
+
+long duration;
+float distance;
+
+
+int sensorPin = A2; 
+int sensorValue = 0; 
+int led = 10; 
+int buzzer = 9; 
+
+void setup() {
+
+
+
+pinMode(led, OUTPUT); 
+pinMode(buzzer,OUTPUT);
+Serial.begin(9600);
+
+
+
+myservo.attach(8);
+pinMode(trigPin, OUTPUT);
+pinMode(echoPin, INPUT); 
+myservo.write(pos);
+
+}
+
+void loop()
+
+{
+   digitalWrite(trigPin, LOW);
+    delayMicroseconds(2);
+    digitalWrite(trigPin, HIGH);
+    delayMicroseconds(10);
+    digitalWrite(trigPin, LOW);
+  
+
+    duration = pulseIn(echoPin, HIGH);
+    distance = 0.034*(duration/2);
+    Serial.println(distance);
+    if (distance < 27)
+    {
+  
+      myservo.write(pos+240);
+      delay(1000);
+    }
+    else 
+    {
+     
+        myservo.write(pos);
+    }
+    delay(1000);
+
+
+sensorValue = analogRead(sensorPin);
+//Serial.println(sensorValue);
+if (sensorValue < 100)
+
+{
+
+Serial.println("Fire Detected");
+Serial.println("LED on");
+digitalWrite(led,HIGH);
+digitalWrite(buzzer,HIGH);
+delay(1000);
+
+}
+
+digitalWrite(led,LOW);
+digitalWrite(buzzer,LOW);
+delay(sensorValue);
+
+}
